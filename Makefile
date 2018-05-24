@@ -62,4 +62,3 @@ clean_proj:
 	@$(RM) -f $(PROJ_NAME)
 	@$(RM) -f $(DOC_NAME) 
 	@echo "Clean-up completed!"
-
