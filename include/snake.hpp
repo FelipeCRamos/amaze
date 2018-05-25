@@ -12,10 +12,12 @@ enum dir{
 };
 
 class Snake{
+
 	private:
 		/* For conventions, we will use [x, y] based axis */
 		std::list< std::pair<int, int> > snake;
 		bool grow_now = false;
+
 	public:
 		// Constructors/Destructors
 		Snake();

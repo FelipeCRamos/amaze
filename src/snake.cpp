@@ -10,16 +10,27 @@ Snake::Snake( int x, int y ){
 }
 
 bool Snake::go( dir d ){
-	std::cout << ">> ";
-	if( d == dir::up ){
-		std::cout << "UP!\n";
-	} else if( d == dir::down ){
-		std::cout << "DOWN!\n";
-	} else if( d == dir::left ){
-		std::cout << "LEFT!\n";
-	} else{
-		std::cout << "RIGHT!\n";
+	while( true ) {
+		std::cout << ">> ";
+		if( d == dir::up ){
+			std::cout << "UP!\n";
+			break;
+		} else if( d == dir::down ){
+			std::cout << "DOWN!\n";
+			break;
+		} else if( d == dir::left ){
+			std::cout << "LEFT!\n";
+			break;
+		} else if( d == dir::right ){
+			std::cout << "RIGHT!\n";
+			break;
+		} else {
+			std::cerr << "\e[31;4mDIRECTION UNDEFINED!\nPlease, choose ";
+			std::cerr << "between valid directions.\n";
+			continue;
+		}
 	}
+	
 	// std::cout << "The direction was: " << d << std::endl;
 	return true;	// stub
 }

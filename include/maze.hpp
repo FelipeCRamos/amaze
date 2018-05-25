@@ -3,6 +3,7 @@
 #include "snake.hpp"
 #include <chrono>
 #include <random>
+#include <fstream>
 
 enum sym{
 	_none = ' ',
@@ -11,6 +12,7 @@ enum sym{
 };
 
 class Maze{
+
 	private:
 		// track variables
 		int _width = 0;

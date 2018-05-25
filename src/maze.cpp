@@ -26,12 +26,14 @@ Maze::~Maze(){
 
 void Maze::print(){
 /*{{{*/
+	std::cout << "\e[34;4m>>> Our map at the moment:\e[0m\n";
 	for( int i = 0; i < _height; i++ ){
 		for( int j = 0; j < _width; j++ ){
 			std::cout << _canvas[i][j];
 		}
-		std::cout << std::endl;
+		std::cout << "\n";
 	}
+	std::cout << "\n";
 }
 /*}}}*/
 
@@ -45,4 +47,11 @@ void Maze::populate(){
 		}
 	}
 }
+
+void Maze::read(){
+/*{{{*/
+	std::ifstream ifs;
+	ifs.open()
 /*}}}*/
+
+
