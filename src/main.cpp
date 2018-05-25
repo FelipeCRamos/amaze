@@ -7,13 +7,8 @@
 #include <fstream>
 
 int main(void){
-	Snake test(2, 2);
-	
-	// test
-	test.go(dir::up);
-	test.go(dir::down);
-	test.go(dir::left);
-	test.go(dir::right);
-
+	Maze main_map(20, 20);
+	main_map.populate();
+	main_map.print();
 	return 0;	
 }
