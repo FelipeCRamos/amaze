@@ -25,13 +25,19 @@ class Maze{
 		Snake _cur_snake;				// double linked list for the snake
 
 	public:
-		Maze( int width, int height );	// initializes with width x height
+		Maze( int width, int height );	// randomic initializes maze structure
+		Maze( std::ifstream & ifs_ );	// from file initializes maze structure
 		~Maze();						// default destructor
 
 		// debug functions
 		void print();
 		void populate();
+		void populate( std::ifstream & ifs_ );
+		char read( std::ifstream & ifs_ );
 		char random();
+
+		// ia functions
+			//TODO...
 };
 
 #endif
