@@ -4,11 +4,36 @@
 
 // STL includes
 #include <iostream>
+#include <sstream>
 
-// Global definitions
-#define RAND true  // true for randomic mazes; false for file definied mazes
+bool RAND;	// definition for either randomic generation, or file receiving.
 
 int main( int argc, char **argv ){
+	if( argc != 1 && argc != 3 ){
+		std::cerr << "Given arguments are either too big or to small";
+		std::cerr << "\nTry running again.\n";
+		return -1;
+	}
+
+	if( argc == 3 ){
+		std::istringstream ss( argv[1] );
+		std::istringstream zs( argv[2] );
+		std::string argument;
+		ss >> argument;
+    
+		if( argument != "-f" ){
+			std::cerr << "Command '" << argument << "' is undefined.\n";
+			std::cerr << "You meant '-f'?\n";
+			return -2;
+			}
+		std::string input_file;
+		zs >> input_file;
+		RAND = false;
+	}
+	else {
+		RAND = true;
+	}
+
 	std::cout << "\tDirections permited for snake: ";
 	std::cout << "\e[32;2mUP RIGHT DOWN LEFT 'u' 'r' 'd' 'l'\e[0m";
 

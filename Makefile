@@ -26,13 +26,13 @@ HEADERS := $(wildcard $(INCDIR)/*)
 SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS := $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
-all: project #documentation
+all: project
 
 project: $(OBJECTS) $(HEADERS) | $(BINDIR)
 	$(CC) $(OBJECTS) $(CFLAGS) -o $(BINDIR)/$(PROJ_NAME)
 	@ln -sfv $(BINDIR)/$(PROJ_NAME) $(PROJ_NAME)
 
-documentation:
+docs:
 	@mkdir -p $(DOCDIR)
 	@doxygen config
 	@ln -sfv $(DOCDIR)/html/index.html $(DOC_NAME)
