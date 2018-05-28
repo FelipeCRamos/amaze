@@ -1,0 +1,26 @@
+Mapa:
+	- matriz bidimensional de char, com cada (i,j) marcado com um '#' ou ' ' ou
+	'A' (exemplos para paredes, espaços validos e maçãns).
+	- caminhos do backtrack podem ser marcados por '*', que quando a cobra for 
+	"andar", irá pro próximo '*' achado
+
+Cobra:
+	- lista encadeada contendo posições (x,y) de cada parte do corpo, com a 
+	head da lista representando a head da cobra.
+	- Metodo "andar" irá atualizar a head para o próximo '*', e a proxima parte
+	do corpo pra o endereço anterior de head, recurssivamente...
+
+DESAFIOS:
+	
+	No mapa:
+	################		Nessa situação, a cobra não irá conseguir achar um
+	### A ##########		caminho válido, entrando num loop da função do back-
+	###   ##########		track
+	###   ##########
+	#øøøøøøøø@   ###		@ -> Cabeça da cobra
+	#ø             #		ø -> corpo da cobra
+	#ø			   #
+	#			   #
+	#			   #
+	################
+

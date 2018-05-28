@@ -3,6 +3,14 @@
 #include <iostream>
 #include <list>
 
+#include "maze.hpp"
+
+/*!
+ *	\file 	snake.hpp
+ *	\brief	Where all the snake object implementations are defined 
+ *	\author	Daniel Guerra and Felipe Ramos
+ */
+
 /** Direction enumerate, used for guidance */
 enum dir{
 	up = 'u',
@@ -13,21 +21,21 @@ enum dir{
 
 class Snake{
 
-	private:
-		/* For conventions, we will use [x, y] based axis */
-		std::list< std::pair<int, int> > snake;
-		bool grow_now = false;
+private:
+	/* For conventions, we will use [x, y] based axis */
+	std::list< std::pair<int, int> > snake;
 
-	public:
-		// Constructors/Destructors
-		Snake();
-		Snake( int x, int y );
+public:
+/* Constructors {{{*/
+	/** Initializes an empty snake */
+	Snake();
 
-		// Movement functions
-		bool go( dir );
+	/** Born the snake with a head on (x,y) position */
+	Snake( int x, int y );
+/*}}}*/
 
-		// Size related functions
-		bool grow( size_t len );
+	/** Walk to the nearest '*' on the map */
+	void walk( Maze &mz );
 };
 
 #endif

@@ -80,9 +80,10 @@ char Maze::read( std::ifstream & _ifs ){
 		case '#': return sym::_wall;
 		case '*': return sym::_apple;
 	}
+}
 /*}}}*/
 
 char Maze::random(){
 /*{{{*/
-
+}
 /*}}}*/
