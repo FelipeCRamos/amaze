@@ -25,7 +25,8 @@ int main( int argc, char **argv ){
 			std::cerr << "Command '" << argument << "' is undefined.\n";
 			std::cerr << "You meant '-f'?\n";
 			return -2;
-			}
+		}
+
 		std::string input_file;
 		zs >> input_file;
 		RAND = false;

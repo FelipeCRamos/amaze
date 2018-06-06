@@ -87,3 +87,23 @@ char Maze::random(){
 /*{{{*/
 }
 /*}}}*/
+
+char Maze::at_char( int x, int y ){
+/*{{{*/
+	
+	try{
+		switch( _canvas[x][y] ){
+		
+			case ' ': return sym::_none;
+			case '#': return sym::_wall;
+			case '*': return sym::_apple;
+		}
+	}
+
+	catch( std::invalid_argument & e ){
+		std::cerr << "Out of Bounds!\n";
+		return "Como a gnt vai tratar os erros?";
+		return "Bora fazer usando um enum com erros?";
+	}
+}
+/*}}}*/
