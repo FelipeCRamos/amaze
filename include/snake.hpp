@@ -1,11 +1,11 @@
-#ifndef _SNAKE_H_
-#define _SNAKE_H_
+#ifndef _SNAKE_HPP_
+#define _SNAKE_HPP_
 // STL includes
 #include <iostream>
 #include <list>
 
 // Project includes
-#include "maze.hpp"
+// #include "maze.hpp"
 
 /*!
  *	\file 	snake.hpp
@@ -14,7 +14,7 @@
  */
 
 /** Direction enumerate, used for guidance */
-enum dir{
+enum Angle{
 	up = 'u',
 	down = 'd',
 	left = 'l',
@@ -26,7 +26,7 @@ using m_pos = std::pair<int,int>;
 class Snake{
 private:
 	/* For conventions, we will use [x, y] based axis */
-	std::list<m_pos> snake;
+	std::list<m_pos> m_snake;
 
 public:
 	/** Initializes the snake with empty position */
@@ -36,7 +36,7 @@ public:
 	Snake( int x, int y );
 
 	/** Walk to the nearest '*' on the map */
-	void walk( dir );
+	void walk( Angle );
 };
 
 #endif

@@ -5,20 +5,21 @@
 Snake::Snake( void ){
 /*{{{*/
 	// STUB
-	this->snake.push_front(std::pair<int,int>(0,0));
+	this->m_snake.push_front(std::pair<int,int>(0,0));
 }
 /*}}}*/
 
 Snake::Snake( int x, int y ){
 /*{{{*/
-	this->snake.push_front(std::pair<int, int> (x, y));
+	this->m_snake.push_front(std::pair<int, int> (x, y));
 }
 /*}}}*/
 
 /*}}}*/
 
-void Snake::walk( dir ){
+void Snake::walk( Angle _dir ){
 /*{{{*/
+	std::cout << _dir << std::endl;
 	// TODO	
 }
 /*}}}*/

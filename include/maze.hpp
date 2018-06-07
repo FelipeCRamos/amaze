@@ -1,5 +1,5 @@
-#ifndef _MAZE_H_
-#define _MAZE_H_
+#ifndef _MAZE_HPP_
+#define _MAZE_HPP_
 
 // STL Includes
 #include <chrono>
@@ -16,11 +16,10 @@ enum sym{
 	_apple = '*',
 };
 
+
 class Maze{
-
 	private:
-		// Snake _cur_snake;				// double linked list for the snake
-
+		Snake m_snake;				// double linked list for the snake
 		// track variables
 		int _width = 0;
 		int _height = 0;
