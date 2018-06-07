@@ -48,6 +48,7 @@ int main( int argc, char **argv ){
 	} else{
 		ifs.open( input_file.c_str() );
 		Maze main_map( ifs );
+		std::cout << "Constructed!" << std::endl;
 		// main_map.populate( ifs );
 		main_map.print();
 	}

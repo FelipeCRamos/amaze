@@ -34,6 +34,7 @@ Maze::Maze( std::ifstream &config_file ){
 	size_t height_axis = 0;
 	while( config_file.good() ){
 		std::getline(config_file, buf);
+		// std::cout << "buf: " << buf << std::endl;
 		if( !buf.empty() ){
 			std::stringstream line(buf);
 			char el; // el(ement)
@@ -76,11 +77,20 @@ Maze::~Maze(){
 
 void Maze::print(){
 /*{{{*/
-	// std::cout << "Printing: " << _height << "x" << _width << std::endl;
 	std::cout << "\e[34;4m>>> THE MAZE:\e[0m\n";
 	for( int i = 0; i < _height; i++ ){
-		for( int j = 0; j <= _width; j++ ){	// Why does it take <= instead < only?!
-			std::cout << _canvas[i][j];
+		for( int j = 0; j < _width+1; j++ ){// Why does it take <= instead < only?!
+			switch(_canvas[i][j]){
+				case sym::_none:
+					std::cout << "\e[2m" << char(sym::_none) << "\e[0m";
+					break;
+				case sym::_wall:
+					std::cout << "\e[2m" << char(sym::_wall) << "\e[0m";
+					break;
+				case sym::_apple:
+					std::cout << "\e[1;5;31m" << char(sym::_apple) << "\e[0m";
+					break;
+			}
 		}
 		std::cout << "\n";
 	} std::cout << "\n";
