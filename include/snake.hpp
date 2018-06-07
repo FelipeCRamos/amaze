@@ -26,13 +26,8 @@ private:
 	std::list< std::pair<int, int> > snake;
 
 public:
-/* Constructors {{{*/
-	/** Initializes an empty snake */
-	Snake();
-
 	/** Born the snake with a head on (x,y) position */
 	Snake( int x, int y );
-/*}}}*/
 
 	/** Walk to the nearest '*' on the map */
 	void walk( Maze &mz );

@@ -9,6 +9,8 @@
 bool RAND;	// definition for either randomic generation, or file receiving.
 
 int main( int argc, char **argv ){
+	std::string input_file;
+
 	if( argc != 1 && argc != 3 ){
 		std::cerr << "Given arguments are either too big or to small";
 		std::cerr << "\nTry running again.\n";
@@ -27,7 +29,6 @@ int main( int argc, char **argv ){
 			return -2;
 		}
 
-		std::string input_file;
 		zs >> input_file;
 		RAND = false;
 	}
@@ -38,18 +39,19 @@ int main( int argc, char **argv ){
 	std::cout << "\tDirections permited for snake: ";
 	std::cout << "\e[32;2mUP RIGHT DOWN LEFT 'u' 'r' 'd' 'l'\e[0m";
 
+	std::ifstream ifs;
 	if( RAND ){
 		Maze main_map( 20, 20 );
 		main_map.populate();
+		main_map.print();
 	} else{
-		std::ifstream ifs;
-		ifs.open( filename.c_str() );
+		ifs.open( input_file.c_str() );
 
 		Maze main_map( ifs );
 		main_map.populate( ifs );
+		main_map.print();
 	}
 
-	main_map.print();
 	if( !RAND ) ifs.close();
 	return 0;	
 }
