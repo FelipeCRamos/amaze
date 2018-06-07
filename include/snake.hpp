@@ -1,8 +1,10 @@
 #ifndef _SNAKE_H_
 #define _SNAKE_H_
+// STL includes
 #include <iostream>
 #include <list>
 
+// Project includes
 #include "maze.hpp"
 
 /*!
@@ -19,18 +21,22 @@ enum dir{
 	right = 'r'
 };
 
-class Snake{
+using m_pos = std::pair<int,int>;
 
+class Snake{
 private:
 	/* For conventions, we will use [x, y] based axis */
-	std::list< std::pair<int, int> > snake;
+	std::list<m_pos> snake;
 
 public:
+	/** Initializes the snake with empty position */
+	Snake( void );
+
 	/** Born the snake with a head on (x,y) position */
 	Snake( int x, int y );
 
 	/** Walk to the nearest '*' on the map */
-	void walk( Maze &mz );
+	void walk( dir );
 };
 
 #endif

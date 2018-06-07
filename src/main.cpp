@@ -1,4 +1,4 @@
-#include "ia.hpp"
+// #include "ia.hpp"
 #include "maze.hpp"
 #include "snake.hpp"
 
@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 
+// #define RAND false ??
 bool RAND;	// definition for either randomic generation, or file receiving.
 
 int main( int argc, char **argv ){
@@ -25,7 +26,7 @@ int main( int argc, char **argv ){
     
 		if( argument != "-f" ){
 			std::cerr << "Command '" << argument << "' is undefined.\n";
-			std::cerr << "You meant '-f'?\n";
+			std::cerr << "Did you meant '-f'?\n";
 			return -2;
 		}
 
@@ -37,7 +38,7 @@ int main( int argc, char **argv ){
 	}
 
 	std::cout << "\tDirections permited for snake: ";
-	std::cout << "\e[32;2mUP RIGHT DOWN LEFT 'u' 'r' 'd' 'l'\e[0m";
+	std::cout << "\e[32;2mUP RIGHT DOWN LEFT 'u' 'r' 'd' 'l'\e[0m\n";
 
 	std::ifstream ifs;
 	if( RAND ){
@@ -46,9 +47,8 @@ int main( int argc, char **argv ){
 		main_map.print();
 	} else{
 		ifs.open( input_file.c_str() );
-
 		Maze main_map( ifs );
-		main_map.populate( ifs );
+		// main_map.populate( ifs );
 		main_map.print();
 	}
 

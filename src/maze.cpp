@@ -15,15 +15,52 @@ Maze::Maze( int width, int height ){
 }
 /*}}}*/
 
-Maze::Maze( std::ifstream & _ifs ){
-/*From file map constructor{{{*/
+
+Maze::Maze( std::ifstream &config_file ){
+/* From file map constructor {{{*/
 	// update the class values
-	_ifs >> _height >> _width;
+	config_file >> _height >> _width;
+	std::cout << "Reading values... Height: " << _height;
+	std::cout << ", Width: " << _width << std::endl;
 
 	// initializes the actual canvas with a 2d array
 	_canvas = new char *[_height];
 	for( int i = 0; i < _height; i++){
 		_canvas[i] = new char[_width];
+	}
+	
+	// Populates the canvas with the file's values
+	std::string buf;
+	size_t height_axis = 0;
+	while( config_file.good() ){
+		std::getline(config_file, buf);
+		if( !buf.empty() ){
+			std::stringstream line(buf);
+			char el; // el(ement)
+			size_t width_axis = 0;
+			while(line.get(el)){
+				// now, taking individual elements
+				if(width_axis++ < _width){
+					switch(el){
+						case sym::_none:
+							_canvas[height_axis][width_axis] = sym::_none;	
+							break;
+						case sym::_wall:
+							_canvas[height_axis][width_axis] = sym::_wall;	
+							break;
+						case sym::_apple:
+							_canvas[height_axis][width_axis] = sym::_apple;	
+							break;
+						default:
+							std::cout << "Char not recognized! ";
+							std::cout << "<" << height_axis << "," << width_axis;
+							std::cout << ">\n"; 
+							break;
+					}
+				}
+			}
+			height_axis++;
+		}
 	}
 }
 /*}}}*/
@@ -39,9 +76,10 @@ Maze::~Maze(){
 
 void Maze::print(){
 /*{{{*/
+	// std::cout << "Printing: " << _height << "x" << _width << std::endl;
 	std::cout << "\e[34;4m>>> THE MAZE:\e[0m\n";
 	for( int i = 0; i < _height; i++ ){
-		for( int j = 0; j < _width; j++ ){
+		for( int j = 0; j <= _width; j++ ){	// Why does it take <= instead < only?!
 			std::cout << _canvas[i][j];
 		}
 		std::cout << "\n";
@@ -54,16 +92,6 @@ void Maze::populate(){
 	for( int i = 0; i < _height; i++ ){
 		for( int j = 0; j < _width; j++ ){
 			_canvas[i][j] = random();
-		}
-	}
-}
-/*}}}*/
-
-void Maze::populate( std::ifstream & _ifs ){
-/*From file populate{{{*/
-	for( int i = 0; i < _height; i++ ){
-		for( int j = 0; j < _width; j++ ){
-			_canvas[i][j] = read( _ifs );
 		}
 	}
 }
@@ -88,22 +116,8 @@ char Maze::random(){
 }
 /*}}}*/
 
-char Maze::at_char( int x, int y ){
+char Maze::get( int x, int y ){
 /*{{{*/
-	
-	try{
-		switch( _canvas[x][y] ){
-		
-			case ' ': return sym::_none;
-			case '#': return sym::_wall;
-			case '*': return sym::_apple;
-		}
-	}
-
-	catch( std::invalid_argument & e ){
-		std::cerr << "Out of Bounds!\n";
-		return "Como a gnt vai tratar os erros?";
-		return "Bora fazer usando um enum com erros?";
-	}
+	return 1;
 }
 /*}}}*/

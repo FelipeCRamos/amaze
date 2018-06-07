@@ -1,7 +1,14 @@
 #include "snake.hpp"
-#include "maze.hpp"
 
 /* Constructors implementation {{{*/
+
+Snake::Snake( void ){
+/*{{{*/
+	// STUB
+	this->snake.push_front(std::pair<int,int>(0,0));
+}
+/*}}}*/
+
 Snake::Snake( int x, int y ){
 /*{{{*/
 	this->snake.push_front(std::pair<int, int> (x, y));
@@ -10,8 +17,8 @@ Snake::Snake( int x, int y ){
 
 /*}}}*/
 
-void Snake::walk( Maze &mz ){
+void Snake::walk( dir ){
 /*{{{*/
-			
+	// TODO	
 }
 /*}}}*/

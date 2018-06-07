@@ -3,5 +3,6 @@
 
 #include "maze.hpp"
 
-bool solve_maze( const Maze & mz, const Snake & snk );
+// bool solve_maze( const Maze & mz, const Snake & snk );
+
 #endif
