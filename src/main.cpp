@@ -1,6 +1,5 @@
 // #include "ia.hpp"
 #include "maze.hpp"
-#include "snake.hpp"
 
 // STL includes
 #include <iostream>
@@ -41,15 +40,18 @@ int main( int argc, char **argv ){
 	std::cout << "\e[32;2mUP RIGHT DOWN LEFT 'u' 'r' 'd' 'l'\e[0m\n";
 
 	std::ifstream ifs;
-	if( RAND ){
-		Maze main_map( 20, 20 );
-		main_map.populate();
-		main_map.print();
-	} else{
+	// if( RAND ){
+		// Maze main_map( 20, 20 );
+		// main_map.populate();
+		// main_map.print();
+	// } else{
 		ifs.open( input_file.c_str() );
 		Maze main_map( ifs );
 		std::cout << "Constructed!" << std::endl;
-		// main_map.populate( ifs );
+		main_map.print();
+	// }
+	for( int i = 0; i < 20; i++ ){
+		system("clear");
 		main_map.print();
 	}
 
