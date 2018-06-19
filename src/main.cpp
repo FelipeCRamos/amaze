@@ -37,6 +37,8 @@ int main( int argc, char **argv ){
 		std::cout << "~ You cannot hit walls, only apples!\n";
 		separator();
 		std::cout << "\n\nGood Luck!\n";
+		std::cout << "\n\nType any key to continue...\n";
+		std::cin;
 	}
 
 	separator();
@@ -69,16 +71,16 @@ int main( int argc, char **argv ){
 	initialConfig.open( filepath.c_str() );
 
 	game::maze canvas( initialConfig );
-	canvas.createSnake(game::pos(5,5));
+	canvas.createSnake(game::pos(1,1));	// initial snake position (x, y)
 	size_t loopCounter = 0;
 
 	{
 		// Initial declarations of the game
 		bool gameRunning = true;
-		
+		char keyPressed = game::dir::right;	
 		while( gameRunning and loopCounter++ < 1000 ){
 			system("clear");
-			gameRunning = canvas.walk(game::dir::down);
+			gameRunning = canvas.walk(game::dir::right);
 			canvas.printMaze();
 			std::this_thread::sleep_for( std::chrono::milliseconds( int(FPS) ) );
 		}

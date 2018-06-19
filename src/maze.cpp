@@ -13,7 +13,7 @@ game::maze::maze( std::ifstream & _ifsfile ){
 	// Populates the canvas with the file's values
 	std::string buf;
 	size_t height_axis = 0;
-	bool snake_created = false;
+	// bool snake_created = false;
 	while( _ifsfile.good() ){
 		std::getline(_ifsfile, buf);
 		// std::cout << "buf: " << buf << std::endl;
@@ -55,8 +55,7 @@ game::maze::maze( std::ifstream & _ifsfile ){
 
 bool game::maze::printMaze(){
 	/*{{{*/
-	/* put the snake on the maze */
-
+	/* Delete all the snake members of the map */
 	for( int _height = 0; _height < this->m_height; _height++ )
 	{
 		for( int _width = 0; _width < this->m_width; _width++ )
@@ -69,15 +68,31 @@ bool game::maze::printMaze(){
 		}
 	}
 
-	for( auto &snake_member : m_snake )
+	/* insert all snake members into the canvas */
+	std::cout << "{x,y} -> Snake(" << m_snake.size() << "): ";
+	for( auto &snk_m : m_snake )
 	{
-		// std::cout << "member at " <<
-			// snake_member.height << ", " << snake_member.width << std::endl;
-		m_canvas[snake_member.height][snake_member.width] = sym::snake_;
+		std::cout << "{" << snk_m.width << "," << snk_m.height << "} ";
+		m_canvas[snk_m.height][snk_m.width] = sym::snake_;
 	}
+	std::cout << std::endl;
+
+	std::cout << "   ";
+	for( int _width = 0; _width < this->m_width; _width++ ){
+		if( _width % 10 == 0 )
+			std::cout << _width << std::setw(10) << std::setfill(' ');
+	}
+	std::cout << "\n";
 
 	for( int _height = 0; _height < this->m_height; _height++ )
 	{
+		if( _height % 5 == 0 ){
+			if( _height / 10 < 1 ){ std::cout << _height << "  "; }
+			else std::cout << _height << " ";
+		}
+		else{
+			std::cout << "   ";
+		}
 		for( int _width = 0; _width < this->m_width; _width++ )
 		{
 			/* Decide's what to print */
@@ -85,6 +100,7 @@ bool game::maze::printMaze(){
 		}
 		std::cout << std::endl;
 	}
+	return true;
 }
 /*}}}*/
 
@@ -98,73 +114,56 @@ bool game::maze::createSnake( pos _position ){
 bool game::maze::walk( dir _dir ){
 /*{{{*/
 	pos headNode(m_snake.front());
-	std::cout << "m_snake.front() = " 
-		<< m_snake.front().width << ", "
-		<< m_snake.front().height << std::endl;
-	std::cout << "m_canvas[" << m_snake.front().width << "]"
-		<< "[" << m_snake.front().height << "] = "
-		<< char(m_canvas[m_snake.front().width][m_snake.front().height]) << std::endl;
 	bool grow = false;
 
-	switch(_dir)
+	if( _dir == dir::up )					// UP DIRECTION
 	{
-		case up:
-			if( checkbound( pos(0, -1) ))
-			{
-				if( m_canvas[headNode.width+0][headNode.height-1] == sym::apple_ )
-					grow = true;	// Não entra aqui!!!
-				m_snake.push_front( pos(headNode.width+0, headNode.height-1) );
-				if( !grow )
-					m_snake.pop_back();
-				return true;
-			} else {
-				return false;
-			}
-			break;
-
-		case down:
-			if( checkbound( pos(0, +1) ))
-			{
-				if( m_canvas[headNode.width+0][headNode.height+1] == sym::apple_ ){
-					grow = true;
-				}
-				m_snake.push_front( pos(headNode.width+0, headNode.height+1) );
-				if( !grow )
-					m_snake.pop_back();
-				return true;
-			} else {
-				return false;
-			}
-			break;
-
-		case left:
-			if( checkbound( pos(-1, 0) ))
-			{
-				if( m_canvas[headNode.width-1][headNode.height+0] == sym::apple_ )
-					grow = true;
-				m_snake.push_front( pos(headNode.width-1, headNode.height+0) );
-				if( !grow )
-					m_snake.pop_back();
-				return true;
-			} else {
-				return false;
-			}
-			break;
-
-		case right:
-			if( checkbound( pos(+1, 0) ))
-			{
-				if( m_canvas[headNode.width+1][headNode.height+0] == sym::apple_ )
-					grow = true;
-				m_snake.push_front( pos(headNode.width+1, headNode.height+0) );
-				if( !grow )
-					m_snake.pop_back();
-				return true;
-			} else {
-				return false;
-			}
-			break;
+		int _xof = 0, _yof = -1;
+		pos _curr( _xof, _yof );
+		if( checkbound(_curr) )
+		{
+			isApple(_curr, grow);
+			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow) m_snake.pop_back();
+		} else return false;
+	} 
+	
+	else if ( _dir == dir::down )			// DOWN DIRECTION
+	{
+		int _xof = 0, _yof = +1;
+		pos _curr( _xof, _yof );
+		if( checkbound(_curr) )
+		{
+			isApple(_curr, grow);
+			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow) m_snake.pop_back();
+		} else return false;
 	}
+	
+	else if( _dir == dir::left )			// LEFT DIRECTION
+	{
+		int _xof = -1, _yof = 0;
+		pos _curr( _xof, _yof );
+		if( checkbound(_curr) )
+		{
+			isApple(_curr, grow);
+			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow) m_snake.pop_back();
+		} else return false;
+	} 
+	
+	else if( _dir == dir::right )			// RIGHT DIRECTION
+	{
+		int _xof = +1, _yof = 0;
+		pos _curr( _xof, _yof );
+		if( checkbound(_curr) )
+		{
+			isApple(_curr, grow);
+			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow) m_snake.pop_back();
+		} else return false;
+	}
+	return true;
 }
 /*}}}*/
 
@@ -196,5 +195,21 @@ bool game::maze::checkbound( pos _position ){
 		}
 	}
 	return true;
+}
+/*}}}*/
+
+bool game::maze::isApple( pos _p, bool & _check ){
+/*{{{*/
+	pos _hn(m_snake.front());
+	char _curr =char(m_canvas[_hn.height+_p.height][_hn.width+_p.width]);
+
+	// std::cout << "sym::apple_ = " << char(sym::apple_) << std::endl;
+	// std::cout << "m_canvas[...][...] = " << _curr << std::endl;
+	if( _curr == char(sym::apple_) ){
+		_check = true;
+		return true;
+	}
+
+	return false;
 }
 /*}}}*/

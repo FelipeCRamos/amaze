@@ -14,6 +14,8 @@ namespace game
 		int height;
 		pos( int _wid, int _hei ) : width(_wid), height(_hei){/* empty */};
 		pos( void ) : width(0), height(0){ /* empty */ };
+		int getw( void ){ return this->width; };
+		int geth( void ){ return this->height; };
 	};
 	enum sym
 	{
@@ -53,6 +55,7 @@ namespace game
 
 			/** Check bounds. */
 			bool checkbound( pos );
+			bool isApple( pos, bool & );
 	};
 }
 #endif
