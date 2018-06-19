@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <cassert>
 #include <thread>
+#include <map>
 
 #include "maze.hpp"
 
@@ -38,7 +39,11 @@ int main( int argc, char **argv ){
 		separator();
 		std::cout << "\n\nGood Luck!\n";
 		std::cout << "\n\nType any key to continue...\n";
-		std::cin;
+
+		/* key press event */
+		char _mbuf;
+		for( int i = 0; i < 2; i++ )
+			std::cin.get(_mbuf);
 	}
 
 	separator();
@@ -53,13 +58,13 @@ int main( int argc, char **argv ){
 				std::istringstream file( argv[2] );
 
 				if( _flag != "-f" ){
-					std::cerr << "Flag incorrect, please try another.\n";
+					std::cerr << "ERROR: Flag incorrect, please try another.\n";
 					return 1;
 				}
 
 				file >> filepath;
 			} else {
-				std::cerr << "Arguments are incorrent (too big or too small)\n";
+				std::cerr << "ERROR: Arguments are incorrent (too big or too small)\n";
 				std::cerr << "Please, try running again following the example:";
 				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
 				return 1;
@@ -71,13 +76,17 @@ int main( int argc, char **argv ){
 	initialConfig.open( filepath.c_str() );
 
 	game::maze canvas( initialConfig );
-	canvas.createSnake(game::pos(1,1));	// initial snake position (x, y)
+	canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
 	size_t loopCounter = 0;
 
 	{
 		// Initial declarations of the game
 		bool gameRunning = true;
-		char keyPressed = game::dir::right;	
+		// std::map<bool, pos>
+		std::list<game::pos> pathToApple;
+
+		// canvas.searchPath( pathToApple );
+
 		while( gameRunning and loopCounter++ < 1000 ){
 			system("clear");
 			gameRunning = canvas.walk(game::dir::right);
