@@ -8,15 +8,20 @@
 
 namespace game
 {
+	/** Struct for a posision (x, y). */
 	struct pos
 	{
-		int width;
-		int height;
-		pos( int _wid, int _hei ) : width(_wid), height(_hei){/* empty */};
-		pos( void ) : width(0), height(0){ /* empty */ };
-		int getw( void ){ return this->width; };
-		int geth( void ){ return this->height; };
+		int width; 		//!< X-axis of the position
+		int height;		//!< Y-axis of the position
+
+		/** Void constructor, initializes the position with (0,0). */
+		pos( void ) : width(0), height(0){/* */};
+
+		/** Default constructor, takes (x,y) argument. */
+		pos( int _wid, int _hei ) : width(_wid), height(_hei){/* */};
 	};
+
+	/** Enumerates the symbols used in the maze. */
 	enum sym
 	{
 		none_ = ' ',
@@ -24,6 +29,7 @@ namespace game
 		wall_ = '#',
 		snake_ = '%'
 	};
+	/** Enumerates the directions that the snake can take. */
 	enum dir
 	{
 		up,
@@ -32,20 +38,43 @@ namespace game
 		right
 	};
 
+	/** Maze class, contains all info about the current maze, snakes, apples. */
 	class maze
 	{
 		protected:
-			std::list<pos> m_snake;
-			int m_height;
-			int m_width;
-			char ** m_canvas;
-			pos m_apple;
+			std::list<pos> m_snake;			//!< Snake object, linked list
+			int m_height;					//!< Height of the map
+			int m_width;					//!< Width of the map
+
+			/* Map array, each (x,y) contains a char `sym` */
+			char ** m_canvas;	
+
+			pos m_apple;					//!< Apple position (NOT IMPLEMENTED)
+
+			/** Class that tells the direction the snake must go in order to
+			 * eat the apple. (NOT IMPLEMENTED YET) */
+			class ai
+			{
+				protected:
+					pos f_apple;	//!< Apple that the algorithm will search
+
+				public:
+					/* The successful path to the apple object. */
+					std::list<pos> f_pos;
+
+					/* Future recurssive function to find the path. */
+					std::list<pos> find_route( pos );
+			};
 
 		public:
+			/** Default constructor, recieve a ifstream with map config. */
 			maze( std::ifstream & _ifsfile );
 
 			/** Print the entire maze on the screen. */
 			bool printMaze();
+
+			/** Flushes the map, rebuilding snake body onto the map. */
+			bool flushCanvas();
 
 			/** Creates the snake on specified position. */
 			bool createSnake( pos );
@@ -55,6 +84,9 @@ namespace game
 
 			/** Check bounds. */
 			bool checkbound( pos );
+
+			/** Check if a given `pos` is an apple, set the bool value to true
+			 * if is, false otherwise. */
 			bool isApple( pos, bool & );
 	};
 }

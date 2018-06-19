@@ -4,27 +4,31 @@ game::maze::maze( std::ifstream & _ifsfile ){
 	/*{{{*/
 	_ifsfile >> m_height >> m_width;
 
-	// initializes the actual canvas with a 2d array
+	/* initializes the actual canvas with a 2d array */
 	m_canvas = new char *[m_height];
 	for( int i = 0; i < m_height; i++){
 		m_canvas[i] = new char[m_width];
 	}
 	
-	// Populates the canvas with the file's values
-	std::string buf;
-	size_t height_axis = 0;
-	// bool snake_created = false;
-	while( _ifsfile.good() ){
+	/* Parse file's config to the actual m_canvas array */
+	std::string buf;			// just a buffer, helps with strings
+	size_t height_axis = 0;		// a simple counter, to keep track of height
+
+	while( _ifsfile.good() )
+	{
 		std::getline(_ifsfile, buf);
-		// std::cout << "buf: " << buf << std::endl;
-		if( !buf.empty() ){
+		if( !buf.empty() )
+		{
 			std::stringstream line(buf);
-			char el; // el(ement)
+			char el; 						// el(ement)
 			size_t width_axis = 0;
-			while(line.get(el)){
+			while(line.get(el))
+			{
 				// now, taking individual elements
-				if(width_axis++ < m_width){
-					switch(el){
+				if(width_axis++ < m_width)
+				{
+					switch(el)
+					{
 						case sym::none_:
 							m_canvas[height_axis][width_axis] = sym::none_;	
 							break;
@@ -40,20 +44,96 @@ game::maze::maze( std::ifstream & _ifsfile ){
 							break;
 
 						default:
-							std::cerr << "Char not recognized! ";
+							std::cerr << "ERROR: Char not recognized! Pos";
 							std::cerr << "<" << height_axis << "," << width_axis;
 							std::cerr << ">\n"; 
 							break;
 					}
 				}
 			}
-			height_axis++;
+			height_axis++;		// updates the height that has been read
 		}
 	}
 }
 /*}}}*/
 
 bool game::maze::printMaze(){
+	/*{{{*/
+
+	/* Escape sequence codes */
+	std::string normal = "\e[0m";
+	std::string faint = "\e[2m";
+	std::string bold = "\e[1m";
+	std::string blink = "\e[5m";
+	std::string cRed = "\e[31m";
+	std::string cGreen = "\e[32m";
+
+	flushCanvas();		//!< Renew the map, updating snake values
+
+	/* This boolean value set's the ruler on the map sides, true = ON */
+	bool rulerGuide = true;
+	if( rulerGuide )
+	{
+		std::cout << "   ";
+		for( int _width = 0; _width < this->m_width; _width++ )
+		{
+			if( _width % 10 == 0 )
+				std::cout << _width << std::setw(10) << std::setfill(' ');
+		}
+		std::cout << "\n";
+	}
+	
+
+	for( int _height = 0; _height < this->m_height; _height++ )
+	{
+		if( _height % 5 == 0 and rulerGuide )
+		{
+			if( _height / 10 < 1 ){ std::cout << _height << "  "; }
+			else std::cout << _height << " ";
+		}
+		else if( rulerGuide )
+		{
+			std::cout << "   ";
+		}
+
+		for( int _width = 0; _width < this->m_width; _width++ )
+		{
+			/* Decide's what to print */
+			// std::cout << char(m_canvas[_height][_width]); 	// pure print
+			switch(m_canvas[_height][_width])
+			{
+				case sym::none_:
+					std::cout << " ";
+					break;
+				case sym::apple_:
+					std::cout 
+						// << blink		// think is annoying
+						<< cRed 
+						<< char(sym::apple_)
+						<< normal;
+					break;
+				case sym::wall_:
+					std::cout 
+						<< faint 
+						<< char(sym::wall_)
+						<< normal;
+					break;
+				case sym::snake_:
+					std::cout
+						<< bold
+						<< cGreen
+						<< char(sym::snake_)
+						<< normal;
+					break;
+			}
+		}
+		std::cout << std::endl;
+	}
+	return true;
+}
+/*}}}*/
+
+bool game::maze::flushCanvas(){
 	/*{{{*/
 	/* Delete all the snake members of the map */
 	for( int _height = 0; _height < this->m_height; _height++ )
@@ -69,37 +149,13 @@ bool game::maze::printMaze(){
 	}
 
 	/* insert all snake members into the canvas */
-	std::cout << "{x,y} -> Snake(" << m_snake.size() << "): ";
+	std::cout << "{x,y} -> Snake(" << m_snake.size() << "): ";	// debug print
 	for( auto &snk_m : m_snake )
 	{
 		std::cout << "{" << snk_m.width << "," << snk_m.height << "} ";
 		m_canvas[snk_m.height][snk_m.width] = sym::snake_;
 	}
 	std::cout << std::endl;
-
-	std::cout << "   ";
-	for( int _width = 0; _width < this->m_width; _width++ ){
-		if( _width % 10 == 0 )
-			std::cout << _width << std::setw(10) << std::setfill(' ');
-	}
-	std::cout << "\n";
-
-	for( int _height = 0; _height < this->m_height; _height++ )
-	{
-		if( _height % 5 == 0 ){
-			if( _height / 10 < 1 ){ std::cout << _height << "  "; }
-			else std::cout << _height << " ";
-		}
-		else{
-			std::cout << "   ";
-		}
-		for( int _width = 0; _width < this->m_width; _width++ )
-		{
-			/* Decide's what to print */
-			std::cout << char(m_canvas[_height][_width]);
-		}
-		std::cout << std::endl;
-	}
 	return true;
 }
 /*}}}*/
@@ -203,8 +259,6 @@ bool game::maze::isApple( pos _p, bool & _check ){
 	pos _hn(m_snake.front());
 	char _curr =char(m_canvas[_hn.height+_p.height][_hn.width+_p.width]);
 
-	// std::cout << "sym::apple_ = " << char(sym::apple_) << std::endl;
-	// std::cout << "m_canvas[...][...] = " << _curr << std::endl;
 	if( _curr == char(sym::apple_) ){
 		_check = true;
 		return true;
@@ -213,3 +267,7 @@ bool game::maze::isApple( pos _p, bool & _check ){
 	return false;
 }
 /*}}}*/
+
+std::list<game::pos> game::maze::ai::find_route( pos _apple ){ 
+	// TODO
+}
