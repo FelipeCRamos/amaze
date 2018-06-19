@@ -1,60 +1,89 @@
-// #include "ia.hpp"
-#include "maze.hpp"
-
-// STL includes
 #include <iostream>
 #include <sstream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <cassert>
+#include <thread>
 
-// #define RAND false ??
-bool RAND;	// definition for either randomic generation, or file receiving.
+#include "maze.hpp"
+
+void separator(){
+	const char SEP_CHAR = '-';
+	const size_t SEP_FILL = 80;
+	std::cout <<
+		"\e[2m" <<
+		std::setfill(SEP_CHAR) <<
+		std::setw(SEP_FILL) <<
+		"\e[0m" <<
+		"\n";
+}
 
 int main( int argc, char **argv ){
-	std::string input_file;
+	double FPS = 1000*1/3;
+	system("clear");
+	std::cout << "Please, welcome to the Amaze Game!\n";
+	std::cout << "Do you want to see the instructions(1)\n";
+	std::cout << "or launch the game(2)? " << std::endl;
+	std::cout << "Choice: ";
+	int first_choice;
+	std::cin >> first_choice;
 
-	if( argc != 1 && argc != 3 ){
-		std::cerr << "Given arguments are either too big or to small";
-		std::cerr << "\nTry running again.\n";
-		return -1;
+	if( first_choice == 1 ){
+		separator();
+		std::cout << "INSTRUCTIONS:\n";
+		separator();
+		std::cout << "~ The snake is controlled by arrow keys or WASD scheme!\n";
+		std::cout << "~ You cannot hit walls, only apples!\n";
+		separator();
+		std::cout << "\n\nGood Luck!\n";
 	}
 
-	if( argc == 3 ){
-		std::istringstream ss( argv[1] );
-		std::istringstream zs( argv[2] );
-		std::string argument;
-		ss >> argument;
-    
-		if( argument != "-f" ){
-			std::cerr << "Command '" << argument << "' is undefined.\n";
-			std::cerr << "Did you meant '-f'?\n";
-			return -2;
+	separator();
+	std::cout << "Starting the game...\n";
+
+	std::string filepath;
+	/* read parameters from argc & argv */
+	{
+		if( argc > 1 ){
+			if( argc == 3 ){
+				std::string _flag( argv[1] );
+				std::istringstream file( argv[2] );
+
+				if( _flag != "-f" ){
+					std::cerr << "Flag incorrect, please try another.\n";
+					return 1;
+				}
+
+				file >> filepath;
+			} else {
+				std::cerr << "Arguments are incorrent (too big or too small)\n";
+				std::cerr << "Please, try running again following the example:";
+				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
+				return 1;
+			}
 		}
-
-		zs >> input_file;
-		RAND = false;
-	}
-	else {
-		RAND = true;
 	}
 
-	std::cout << "\tDirections permited for snake: ";
-	std::cout << "\e[32;2mUP RIGHT DOWN LEFT 'u' 'r' 'd' 'l'\e[0m\n";
+	std::ifstream initialConfig;
+	initialConfig.open( filepath.c_str() );
 
-	std::ifstream ifs;
-	// if( RAND ){
-		// Maze main_map( 20, 20 );
-		// main_map.populate();
-		// main_map.print();
-	// } else{
-		ifs.open( input_file.c_str() );
-		Maze main_map( ifs );
-		std::cout << "Constructed!" << std::endl;
-		main_map.print();
-	// }
-	for( int i = 0; i < 20; i++ ){
-		system("clear");
-		main_map.print();
+	game::maze canvas( initialConfig );
+	canvas.createSnake(game::pos(5,5));
+	size_t loopCounter = 0;
+
+	{
+		// Initial declarations of the game
+		bool gameRunning = true;
+		
+		while( gameRunning and loopCounter++ < 1000 ){
+			system("clear");
+			gameRunning = canvas.walk(game::dir::down);
+			canvas.printMaze();
+			std::this_thread::sleep_for( std::chrono::milliseconds( int(FPS) ) );
+		}
 	}
 
-	if( !RAND ) ifs.close();
-	return 0;	
+	std::cout << "Exiting the game...\n";
+	return 0;
 }

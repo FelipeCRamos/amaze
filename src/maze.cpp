@@ -1,66 +1,21 @@
-#include <iostream>
 #include "maze.hpp"
 
-// Snake functions
-Maze::Snake::Snake( int x, int y ){
-/*{{{*/
-	std::pair<int, int> _position( x, y );
-	snake.push_front( _position );
-}
-/*}}}*/
-
-void Maze::Snake::create( int x, int y ){
-/*{{{*/
-	std::pair<int, int> _position( x, y );
-	snake.push_front( _position );
-}
-/*}}}*/
-
-bool Maze::Snake::check_pos( int x, int y ){
-/*{{{*/
-	for( auto &i : snake ){
-		if( std::pair<int, int>(x,y) == i ){
-			return true;
-		}
-	}
-	return false;
-}
-	/*}}}*/
-
-// Constructors
-Maze::Maze( int width, int height ){
-/*Random map constructor{{{*/
-	// update the class values
-	_width = width;
-	_height = height;
+game::maze::maze( std::ifstream & _ifsfile ){
+	/*{{{*/
+	_ifsfile >> m_height >> m_width;
 
 	// initializes the actual canvas with a 2d array
-	_canvas = new char *[_height];
-	for( int i = 0; i < _height; i++){
-		_canvas[i] = new char[_width];
-	}
-}
-/*}}}*/
-
-Maze::Maze( std::ifstream &config_file ){
-/* From file map constructor {{{*/
-	// update the class values
-	config_file >> _height >> _width;
-	std::cout << "Reading values... Height: " << _height;
-	std::cout << ", Width: " << _width << std::endl;
-
-	// initializes the actual canvas with a 2d array
-	_canvas = new char *[_height];
-	for( int i = 0; i < _height; i++){
-		_canvas[i] = new char[_width];
+	m_canvas = new char *[m_height];
+	for( int i = 0; i < m_height; i++){
+		m_canvas[i] = new char[m_width];
 	}
 	
 	// Populates the canvas with the file's values
 	std::string buf;
 	size_t height_axis = 0;
 	bool snake_created = false;
-	while( config_file.good() ){
-		std::getline(config_file, buf);
+	while( _ifsfile.good() ){
+		std::getline(_ifsfile, buf);
 		// std::cout << "buf: " << buf << std::endl;
 		if( !buf.empty() ){
 			std::stringstream line(buf);
@@ -68,30 +23,26 @@ Maze::Maze( std::ifstream &config_file ){
 			size_t width_axis = 0;
 			while(line.get(el)){
 				// now, taking individual elements
-				if(width_axis++ < _width){
+				if(width_axis++ < m_width){
 					switch(el){
-						case sym::_none:
-							if(!snake_created){
-								m_snake.create(width_axis, height_axis);
-								snake_created = true;
-							}
-							_canvas[height_axis][width_axis] = sym::_none;	
+						case sym::none_:
+							m_canvas[height_axis][width_axis] = sym::none_;	
 							break;
 
-						case sym::_wall:
-							_canvas[height_axis][width_axis] = sym::_wall;	
+						case sym::wall_:
+							m_canvas[height_axis][width_axis] = sym::wall_;	
 							break;
 
-						case sym::_apple:
-							this->m_apple.first = width_axis;
-							this->m_apple.second = height_axis;
-							_canvas[height_axis][width_axis] = sym::_apple;	
+						case sym::apple_:
+							this->m_apple.width = width_axis;
+							this->m_apple.height = height_axis;
+							m_canvas[height_axis][width_axis] = sym::apple_;	
 							break;
 
 						default:
-							std::cout << "Char not recognized! ";
-							std::cout << "<" << height_axis << "," << width_axis;
-							std::cout << ">\n"; 
+							std::cerr << "Char not recognized! ";
+							std::cerr << "<" << height_axis << "," << width_axis;
+							std::cerr << ">\n"; 
 							break;
 					}
 				}
@@ -102,84 +53,148 @@ Maze::Maze( std::ifstream &config_file ){
 }
 /*}}}*/
 
-Maze::~Maze(){
-/*{{{*/
-	for( size_t i = 0; i < _height; i++ ){
-		delete [] _canvas[i];
-	}
-	delete [] _canvas;
-}
-/*}}}*/
+bool game::maze::printMaze(){
+	/*{{{*/
+	/* put the snake on the maze */
 
-// Internal functions
-void Maze::print(){
-/*{{{*/
-	std::cout << "\e[34;4m>>> THE MAZE:\e[0m\n";
-	for( int i = 0; i < _height; i++ ){
-		for( int j = 0; j < _width+1; j++ ){// Why does it take <= instead < only?!
-			if( m_snake.check_pos(j, i) ){
-				std::cout << "\e[0m" << char(sym::_snake_body) << "\e[0m";
-			} else {
-				switch(_canvas[i][j]){
-					case sym::_none:
-						std::cout << "\e[2m" << char(sym::_none) << "\e[0m";
-						break;
-					case sym::_wall:
-						std::cout << "\e[2m" << char(sym::_wall) << "\e[0m";
-						break;
-					case sym::_apple:
-						std::cout << "\e[1;5;31m" << char(sym::_apple) << "\e[0m";
-						break;
-					case sym::_snake_head:
-						std::cout << "\e[1m" << char(sym::_snake_head) << "\e[0m";
-						break;
-					case sym::_snake_body:
-						std::cout << "\e[0m" << char(sym::_snake_body) << "\e[0m";
-						break;
-				}
+	for( int _height = 0; _height < this->m_height; _height++ )
+	{
+		for( int _width = 0; _width < this->m_width; _width++ )
+		{
+			/* clear from prev cycle */
+			if( m_canvas[_height][_width] == sym::snake_ )
+			{
+				m_canvas[_height][_width] = sym::none_;
 			}
-			
 		}
-		std::cout << "\n";
-	} std::cout << "\n";
-}
-/*}}}*/
+	}
 
-void Maze::populate(){
-/*Random populate{{{*/
-	for( int i = 0; i < _height; i++ ){
-		for( int j = 0; j < _width; j++ ){
-			_canvas[i][j] = random();
+	for( auto &snake_member : m_snake )
+	{
+		// std::cout << "member at " <<
+			// snake_member.height << ", " << snake_member.width << std::endl;
+		m_canvas[snake_member.height][snake_member.width] = sym::snake_;
+	}
+
+	for( int _height = 0; _height < this->m_height; _height++ )
+	{
+		for( int _width = 0; _width < this->m_width; _width++ )
+		{
+			/* Decide's what to print */
+			std::cout << char(m_canvas[_height][_width]);
 		}
+		std::cout << std::endl;
 	}
 }
 /*}}}*/
 
-char Maze::read( std::ifstream & _ifs ){
+bool game::maze::createSnake( pos _position ){
+	/*{{{*/
+	m_snake.push_front(_position);
+	return true;
+}
+/*}}}*/
+
+bool game::maze::walk( dir _dir ){
 /*{{{*/
-	char c_;
-	_ifs >> c_;
-	
-	switch( c_ ){
-		
-		case ' ': return sym::_none;
-		case '#': return sym::_wall;
-		case '*': return sym::_apple;
+	pos headNode(m_snake.front());
+	std::cout << "m_snake.front() = " 
+		<< m_snake.front().width << ", "
+		<< m_snake.front().height << std::endl;
+	std::cout << "m_canvas[" << m_snake.front().width << "]"
+		<< "[" << m_snake.front().height << "] = "
+		<< char(m_canvas[m_snake.front().width][m_snake.front().height]) << std::endl;
+	bool grow = false;
+
+	switch(_dir)
+	{
+		case up:
+			if( checkbound( pos(0, -1) ))
+			{
+				if( m_canvas[headNode.width+0][headNode.height-1] == sym::apple_ )
+					grow = true;	// Não entra aqui!!!
+				m_snake.push_front( pos(headNode.width+0, headNode.height-1) );
+				if( !grow )
+					m_snake.pop_back();
+				return true;
+			} else {
+				return false;
+			}
+			break;
+
+		case down:
+			if( checkbound( pos(0, +1) ))
+			{
+				if( m_canvas[headNode.width+0][headNode.height+1] == sym::apple_ ){
+					grow = true;
+				}
+				m_snake.push_front( pos(headNode.width+0, headNode.height+1) );
+				if( !grow )
+					m_snake.pop_back();
+				return true;
+			} else {
+				return false;
+			}
+			break;
+
+		case left:
+			if( checkbound( pos(-1, 0) ))
+			{
+				if( m_canvas[headNode.width-1][headNode.height+0] == sym::apple_ )
+					grow = true;
+				m_snake.push_front( pos(headNode.width-1, headNode.height+0) );
+				if( !grow )
+					m_snake.pop_back();
+				return true;
+			} else {
+				return false;
+			}
+			break;
+
+		case right:
+			if( checkbound( pos(+1, 0) ))
+			{
+				if( m_canvas[headNode.width+1][headNode.height+0] == sym::apple_ )
+					grow = true;
+				m_snake.push_front( pos(headNode.width+1, headNode.height+0) );
+				if( !grow )
+					m_snake.pop_back();
+				return true;
+			} else {
+				return false;
+			}
+			break;
 	}
 }
 /*}}}*/
 
-char Maze::random(){
+bool game::maze::checkbound( pos _position ){
 /*{{{*/
+	/* _position is a **RELATIVE** position (+1, -1) for example */
+	pos headNode(m_snake.front());
+
+	if(
+			headNode.height + _position.height <= 0 or 
+			headNode.height + _position.height >= this->m_height - 1
+	)
+	{
+		return false;
+	}
+	else if( 
+			headNode.width + _position.width <= 0 or 
+			headNode.width + _position.width >= this->m_width - 1 )
+	{
+		return false;
+	}
+	else
+	{
+		if( m_canvas
+				[headNode.height + _position.height]
+				[headNode.width + _position.width] == sym::wall_ 
+		  ){
+			return false;
+		}
+	}
+	return true;
 }
 /*}}}*/
-
-bool Maze::swalk( DIR _dir ){
-} 
-
-char Maze::get( int x, int y ){
-/*{{{*/
-	return _canvas[y][x];
-}
-/*}}}*/
-
