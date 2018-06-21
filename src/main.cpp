@@ -21,7 +21,38 @@ void separator(){
 }
 
 int main( int argc, char **argv ){
+
+	std::string filepath;
+	/* read parameters from argc & argv */
+	{
+		if( argc > 1 ){
+			if( argc == 3 ){
+				std::string _flag( argv[1] );
+				std::istringstream file( argv[2] );
+
+				if( _flag != "-f" ){
+					std::cerr << "ERROR: Flag incorrect, please try another.\n";
+					return 1;
+				}
+
+				file >> filepath;
+			} else {
+				std::cerr << "ERROR: Arguments are incorrent (too big or too small)\n";
+				std::cerr << "Please, try running again following the example:";
+				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
+				return 1;
+			}
+		}
+		else
+		{
+			std::cerr << "ERROR: Invalid number of arguments!\n";
+			std::cerr << "Please, check the documentation!\n";
+			return 1;
+		}
+	}
+
 	double FPS = 1000*1/3;
+
 	system("clear");
 	std::cout << "Please, welcome to the Amaze Game!\n";
 	std::cout << "Do you want to see the instructions(1)\n";
@@ -49,28 +80,6 @@ int main( int argc, char **argv ){
 	separator();
 	std::cout << "Starting the game...\n";
 
-	std::string filepath;
-	/* read parameters from argc & argv */
-	{
-		if( argc > 1 ){
-			if( argc == 3 ){
-				std::string _flag( argv[1] );
-				std::istringstream file( argv[2] );
-
-				if( _flag != "-f" ){
-					std::cerr << "ERROR: Flag incorrect, please try another.\n";
-					return 1;
-				}
-
-				file >> filepath;
-			} else {
-				std::cerr << "ERROR: Arguments are incorrent (too big or too small)\n";
-				std::cerr << "Please, try running again following the example:";
-				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
-				return 1;
-			}
-		}
-	}
 
 	std::ifstream initialConfig;
 	initialConfig.open( filepath.c_str() );

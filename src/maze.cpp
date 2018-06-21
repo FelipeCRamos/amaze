@@ -3,6 +3,7 @@
 game::maze::maze( std::ifstream & _ifsfile ){
 	/*{{{*/
 	_ifsfile >> m_height >> m_width;
+	this->m_width += 1;
 
 	/* initializes the actual canvas with a 2d array */
 	m_canvas = new char *[m_height];
