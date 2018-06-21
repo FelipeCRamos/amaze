@@ -1,5 +1,6 @@
 #ifndef _MAZE_HPP_
 #define _MAZE_HPP_
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
