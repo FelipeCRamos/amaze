@@ -87,7 +87,6 @@ int main( int argc, char **argv ){
 
 	bool snk_created = false;
 	game::maze canvas( initialConfig, snk_created );
-//	canvas.randomApplePosition();	// Initialize apple on random position.
 
 	if( !snk_created ){
 		std::cerr << "ERROR: A snake ("
@@ -119,7 +118,7 @@ int main( int argc, char **argv ){
 		// While there still is directions to go and game is Runnig,
 		// walk on that direction and remove it from list.
 		while( !directions.empty() and gameRunning ){
-			//system("clear");
+			system("clear");
 			gameRunning = canvas.walk( directions.front() );
 			canvas.printMaze();
 

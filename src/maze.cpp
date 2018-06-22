@@ -196,7 +196,6 @@ bool game::maze::walk( dir _dir ){
 
 	if( _dir == dir::up )					// UP DIRECTION
 	{
-		std::cout << "UP\n";
 		int _xof = 0, _yof = -1;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -209,7 +208,6 @@ bool game::maze::walk( dir _dir ){
 	
 	else if ( _dir == dir::down )			// DOWN DIRECTION
 	{
-		std::cout << "DOWN\n";
 		int _xof = 0, _yof = +1;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -222,7 +220,6 @@ bool game::maze::walk( dir _dir ){
 	
 	else if( _dir == dir::left )			// LEFT DIRECTION
 	{
-		std::cout << "LEFT\n";
 		int _xof = -1, _yof = 0;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -235,7 +232,6 @@ bool game::maze::walk( dir _dir ){
 	
 	else if( _dir == dir::right )			// RIGHT DIRECTION
 	{
-		std::cout << "RIGHT\n";
 		int _xof = +1, _yof = 0;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -269,10 +265,9 @@ bool game::maze::checkbound( pos _position ){
 	}
 	else
 	{
-		if( m_canvas
-				[headNode.height + _position.height]
-				[headNode.width + _position.width] == sym::wall_ 
-		  ){
+		int i = headNode.height + _position.height;
+		int j = headNode.width + _position.width;
+		if( m_canvas[i][j] == sym::wall_ ){
 			return false;
 		}
 	}
