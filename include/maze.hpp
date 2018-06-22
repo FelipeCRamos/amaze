@@ -95,6 +95,7 @@ namespace game
 			bool randomApplePosition();
 
 			pos applePos();
+			pos snakeHead();
 	};
 }
 #endif
