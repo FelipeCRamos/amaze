@@ -93,7 +93,8 @@ namespace game
 			bool isApple( pos, bool & );
 
 			bool randomApplePosition();
-			
+
+			pos applePos();
 	};
 }
 #endif

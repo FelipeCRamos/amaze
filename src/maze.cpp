@@ -312,6 +312,12 @@ bool game::maze::randomApplePosition(){
 }
 /*}}}*/
 
+game::pos game::maze::applePos(){
+/*{{{*/
+	return this->m_apple;
+}
+/*}}}*/
+
 std::list<game::pos> game::maze::ai::find_route( pos _apple ){ 
 	// TODO
 }
