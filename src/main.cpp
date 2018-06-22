@@ -87,6 +87,8 @@ int main( int argc, char **argv ){
 
 	bool snk_created = false;
 	game::maze canvas( initialConfig, snk_created );
+//	canvas.randomApplePosition();	// Initialize apple on random position.
+
 	if( !snk_created ){
 		std::cerr << "ERROR: A snake ("
 			<< char(game::sym::snake_) << ") is missing on the parse file!\n";
@@ -94,26 +96,38 @@ int main( int argc, char **argv ){
 	}
 	// canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
 	size_t loopCounter = 0;
-
+	size_t AppleCounter = 0;
+	while( AppleCounter < 10 )
 	{
 		// Initial declarations of the game
 		bool gameRunning = true;
 
+		canvas.randomApplePosition();
+
 		// Discovers the right sequence of moves to perfom,
 		// in order to find the apple.
 		std::list<game::dir> directions;
-		directions = canvas.find_route( game::pos(2,1), game::pos(5,2)/*snake_head, apple_pos */ );
-		
+		directions = canvas.find_route( canvas.snakeHead(),
+										canvas.applePos() );
+
+		std::cout << "Directions={ ";
+		for( auto i( directions.begin() ); i != directions.end(); i++ ){
+			std::cout << *i << "; ";
+		}
+		std::cout << "}\n";
+
 		// While there still is directions to go and game is Runnig,
 		// walk on that direction and remove it from list.
 		while( !directions.empty() and gameRunning ){
-			system("clear");
+			//system("clear");
 			gameRunning = canvas.walk( directions.front() );
 			canvas.printMaze();
+
+			// Removes direction that was already used.
 			directions.pop_front();
 			std::this_thread::sleep_for( std::chrono::milliseconds( int(FPS) ) );
 		}
-
+		AppleCounter++;
 	}
 
 	std::cout << "Exiting the game...\n";

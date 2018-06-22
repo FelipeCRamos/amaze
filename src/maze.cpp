@@ -196,6 +196,7 @@ bool game::maze::walk( dir _dir ){
 
 	if( _dir == dir::up )					// UP DIRECTION
 	{
+		std::cout << "UP\n";
 		int _xof = 0, _yof = -1;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -208,6 +209,7 @@ bool game::maze::walk( dir _dir ){
 	
 	else if ( _dir == dir::down )			// DOWN DIRECTION
 	{
+		std::cout << "DOWN\n";
 		int _xof = 0, _yof = +1;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -220,6 +222,7 @@ bool game::maze::walk( dir _dir ){
 	
 	else if( _dir == dir::left )			// LEFT DIRECTION
 	{
+		std::cout << "LEFT\n";
 		int _xof = -1, _yof = 0;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -232,6 +235,7 @@ bool game::maze::walk( dir _dir ){
 	
 	else if( _dir == dir::right )			// RIGHT DIRECTION
 	{
+		std::cout << "RIGHT\n";
 		int _xof = +1, _yof = 0;
 		pos _curr( _xof, _yof );
 		if( checkbound(_curr) )
@@ -279,7 +283,7 @@ bool game::maze::checkbound( pos _position ){
 bool game::maze::isApple( pos _p, bool & _check ){
 /*{{{*/
 	pos _hn(m_snake.front());
-	char _curr =char(m_canvas[_hn.height+_p.height][_hn.width+_p.width]);
+	char _curr = char(m_canvas[_hn.height+_p.height][_hn.width+_p.width]);
 
 	if( _curr == char(sym::apple_) ){
 		_check = true;
@@ -297,7 +301,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 
 	std::list<dir> moving;
 
-	bool visited[/*game::maze::m_height*/10][10/*this->m_width*/];
+	bool visited[m_height][m_width];
 	std::memset(visited, false, sizeof visited);
 
 	// Mark coordinate as visited.
@@ -349,7 +353,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 				if( i == 0) aux = dir::up;
 				else if( i == 1 ) aux = dir::left;
 				else if( i == 2 ) aux = dir::right;
-				else aux = dir::down;
+				else { aux = dir::down; }
 
 				visited[row][col] = true;
 				curr.where_to_move.push_back( aux );
@@ -387,6 +391,7 @@ bool game::maze::randomApplePosition(){
 			return true;
 		}
 	}
+
 	return false;
 }
 /*}}}*/
