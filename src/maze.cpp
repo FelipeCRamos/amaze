@@ -307,14 +307,6 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 	// Mark coordinate as visited.
 	visited[_start.height][_start.width] = true;
 
-	/*
-	struct queueNode{
-		pos _cord;
-		std::list<dir> where_to_move;
-
-		queueNode( pos coordinate,
-	};
-	*/
 	// Create a queue for BFS.
 	std::queue<queueNode> q;
 
@@ -357,7 +349,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 
 				visited[row][col] = true;
 				curr.where_to_move.push_back( aux );
-				queueNode adj = { pos(row, col),		// denada
+				queueNode adj = { pos(col, row),		// denada
 								  curr.where_to_move };
 				
 				curr.where_to_move.pop_back();
@@ -367,6 +359,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 	}
 
 	// return an default movement if apple can't be reached.
+	std::cout << "DEFAULT\n";
 	return moving;
 }
 /*}}}*/
