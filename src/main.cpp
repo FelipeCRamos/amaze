@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <cassert>
 #include <thread>
+#include <vector>
 
 #include "maze.hpp"
 
@@ -77,13 +78,28 @@ int main( int argc, char **argv ){
 	{
 		// Initial declarations of the game
 		bool gameRunning = true;
-		char keyPressed = game::dir::right;	
-		while( gameRunning and loopCounter++ < 1000 ){
+
+		// Discovers the right sequence of moves to perfom,
+		// in order to find the apple.
+		std::list<game::dir> directions;
+		directions = canvas.find_route( game::pos(2,1), game::pos(5,2)/*snake_head, apple_pos */ );
+		
+		// While there still is directions to go and game is Runnig,
+		// walk on that direction and remove it from list.
+		while( !directions.empty() and gameRunning ){
+			system("clear");
+			gameRunning = canvas.walk( directions.front() );
+			canvas.printMaze();
+			directions.pop_front();
+		}
+
+/*		while( gameRunning and loopCounter++ < 1000 ){
 			system("clear");
 			gameRunning = canvas.walk(game::dir::right);
 			canvas.printMaze();
 			std::this_thread::sleep_for( std::chrono::milliseconds( int(FPS) ) );
 		}
+*/
 	}
 
 	std::cout << "Exiting the game...\n";

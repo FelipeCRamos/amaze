@@ -1,8 +1,11 @@
 #include "maze.hpp"
+#include <queue>
+#include <cstring>
 
 game::maze::maze( std::ifstream & _ifsfile ){
 	/*{{{*/
 	_ifsfile >> m_height >> m_width;
+	this->m_width += 1;
 
 	/* initializes the actual canvas with a 2d array */
 	m_canvas = new char *[m_height];
@@ -268,6 +271,79 @@ bool game::maze::isApple( pos _p, bool & _check ){
 }
 /*}}}*/
 
-std::list<game::pos> game::maze::ai::find_route( pos _apple ){ 
-	// TODO
+std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){ 
+/*{{{*/
+	int rowNum[] = {-1, 0, 0, 1};
+	int colNum[] = {0, -1, 1, 0};
+
+	std::list<dir> moving;
+
+	bool visited[/*game::maze::m_height*/10][10/*this->m_width*/];
+	std::memset(visited, false, sizeof visited);
+
+	// Mark coordinate as visited.
+	visited[_start.height][_start.width] = true;
+
+	/*
+	struct queueNode{
+		pos _cord;
+		std::list<dir> where_to_move;
+
+		queueNode( pos coordinate,
+	};
+	*/
+	// Create a queue for BFS.
+	std::queue<queueNode> q;
+
+	// Direction to reach _curr from _curr;
+	moving.push_back( dir::stay );
+	queueNode inicio = { _start, moving };
+	q.push( inicio );
+
+	// Do BFS starting from current cell.
+	while( !q.empty() ){
+		queueNode curr = q.front();
+		pos point = curr._cord;
+
+		// If we have reached the destination cell, we are done.
+		if( point.height == _apple.height and point.width == _apple.width ){
+			return curr.where_to_move;
+		}
+
+		// Otherwise dequeue the front coordinate in the queue,
+		// and enqueue it's adjacent coordinates.
+		q.pop();
+
+		for( int i=0; i < 4; i++ ){
+			int row = point.height + rowNum[i];
+			int col = point.width + colNum[i];
+
+			pos atMoment;
+			atMoment.width = colNum[i];
+			atMoment.height = rowNum[i];
+
+			// If adjacent coordinate is valid, has path and
+			// not visited yet, enqueue it.
+			if( /*true == checkbound( pos(colNum[i], rowNum[i]) ) and */false == visited[row][col] ){
+				// Mark coordinate as visited and enqueue it.
+				dir aux; // Where it went.
+				if( i == 0) aux = dir::up;
+				else if( i == 1 ) aux = dir::left;
+				else if( i == 2 ) aux = dir::right;
+				else aux = dir::down;
+
+				visited[row][col] = true;
+				curr.where_to_move.push_back( aux );
+				queueNode adj = { {row, col},
+								  curr.where_to_move };
+				
+				curr.where_to_move.pop_back();
+				q.push( adj );
+			}
+		}
+	}
+
+	// return an default movement if apple can't be reached.
+	return moving;
 }
+/*}}}*/

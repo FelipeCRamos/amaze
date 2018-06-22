@@ -30,13 +30,22 @@ namespace game
 		wall_ = '#',
 		snake_ = '%'
 	};
+
 	/** Enumerates the directions that the snake can take. */
 	enum dir
 	{
 		up,
 		down,
 		left,
-		right
+		right,
+		stay
+	};
+
+	/* Struct for BFS purposes. */
+	struct queueNode
+	{
+		pos _cord;
+		std::list<game::dir> where_to_move;
 	};
 
 	/** Maze class, contains all info about the current maze, snakes, apples. */
@@ -64,7 +73,12 @@ namespace game
 					std::list<pos> f_pos;
 
 					/* Future recurssive function to find the path. */
-					std::list<pos> find_route( pos );
+					//std::list<dir> find_route( pos, pos );
+
+					// For when path to apple is inexistent.
+					// Default movement will just send snake to die.
+					//std::list<dir> DEFAULT_MOVEMENTS( 100, up );
+	
 			};
 
 		public:
@@ -84,11 +98,14 @@ namespace game
 			bool walk( dir );
 
 			/** Check bounds. */
-			bool checkbound( pos );
+			bool checkbound( pos _position );
 
 			/** Check if a given `pos` is an apple, set the bool value to true
 			 * if is, false otherwise. */
 			bool isApple( pos, bool & );
+
+			std::list<dir> find_route( pos, pos );
+
 	};
 }
 #endif

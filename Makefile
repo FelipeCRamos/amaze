@@ -17,7 +17,7 @@ DOCDIR = ./Documentation
 
 # Macros
 CC = g++
-CFLAGS = -Wall -g -ggdb -std=c++11 -I. -I$(INCDIR)
+CFLAGS = -Wall -w -g -ggdb -std=c++11 -I. -I$(INCDIR)
 RM = -rm
 PROJ_NAME = amaze
 DOC_NAME = index.html
