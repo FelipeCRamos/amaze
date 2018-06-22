@@ -319,8 +319,10 @@ game::pos game::maze::applePos(){
 /*}}}*/
 
 game::pos game::maze::snakeHead(){
+/*{{{*/
 	return this->m_snake.front();
 }
+/*}}}*/
 
 std::list<game::pos> game::maze::ai::find_route( pos _apple ){ 
 	// TODO
