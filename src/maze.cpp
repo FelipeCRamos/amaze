@@ -2,7 +2,7 @@
 #include <queue>
 #include <cstring>
 
-game::maze::maze( std::ifstream & _ifsfile ){
+game::maze::maze( std::ifstream & _ifsfile, bool & _snk ){
 	/*{{{*/
 	_ifsfile >> m_height >> m_width;
 	this->m_width += 1;
@@ -16,6 +16,7 @@ game::maze::maze( std::ifstream & _ifsfile ){
 	/* Parse file's config to the actual m_canvas array */
 	std::string buf;			// just a buffer, helps with strings
 	size_t height_axis = 0;		// a simple counter, to keep track of height
+	bool snake_created = false;
 
 	while( _ifsfile.good() )
 	{
@@ -36,8 +37,18 @@ game::maze::maze( std::ifstream & _ifsfile ){
 							m_canvas[height_axis][width_axis] = sym::none_;	
 							break;
 
+						case sym::inv_wall_:
+							m_canvas[height_axis][width_axis] = sym::inv_wall_;	
+							break;
+
 						case sym::wall_:
 							m_canvas[height_axis][width_axis] = sym::wall_;	
+							break;
+
+						case sym::snake_:
+							m_canvas[height_axis][width_axis] = sym::none_;
+							createSnake(pos(width_axis, height_axis));
+							snake_created = true;
 							break;
 
 						case sym::apple_:
@@ -57,6 +68,7 @@ game::maze::maze( std::ifstream & _ifsfile ){
 			height_axis++;		// updates the height that has been read
 		}
 	}
+	_snk = snake_created;
 }
 /*}}}*/
 
@@ -86,6 +98,7 @@ bool game::maze::printMaze(){
 		std::cout << "\n";
 	}
 	
+	m_canvas[m_apple.height][m_apple.width] = sym::apple_;
 
 	for( int _height = 0; _height < this->m_height; _height++ )
 	{
@@ -119,6 +132,12 @@ bool game::maze::printMaze(){
 					std::cout 
 						<< faint 
 						<< char(sym::wall_)
+						<< normal;
+					break;
+				case sym::inv_wall_:
+					std::cout 
+						<< faint 
+						<< char(sym::inv_wall_)
 						<< normal;
 					break;
 				case sym::snake_:
@@ -334,7 +353,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 
 				visited[row][col] = true;
 				curr.where_to_move.push_back( aux );
-				queueNode adj = { {row, col},
+				queueNode adj = { pos(row, col),		// denada
 								  curr.where_to_move };
 				
 				curr.where_to_move.pop_back();
@@ -347,3 +366,40 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 	return moving;
 }
 /*}}}*/
+
+bool game::maze::randomApplePosition(){
+/*{{{*/
+	bool valid = false;
+	while( !valid )
+	{
+		std::mt19937 random (
+				std::chrono::system_clock::now().time_since_epoch().count()
+			);
+		size_t x_pos = random() % this->m_width;
+		size_t y_pos = random() % this->m_height;
+		// std::cout << "Testing pos(" << x_pos << ", " << y_pos << std::endl;
+		if( this->m_canvas[y_pos][x_pos] == sym::none_ )
+		{
+			// std::cout << "VALID!\n";
+			valid = true;		
+			m_apple.width = x_pos;
+			m_apple.height = y_pos;
+			return true;
+		}
+	}
+	return false;
+}
+/*}}}*/
+
+game::pos game::maze::applePos(){
+/*{{{*/
+	return this->m_apple;
+}
+/*}}}*/
+
+game::pos game::maze::snakeHead(){
+/*{{{*/
+	return this->m_snake.front();
+}
+/*}}}*/
+

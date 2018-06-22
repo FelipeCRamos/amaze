@@ -6,6 +6,7 @@
 #include <cassert>
 #include <thread>
 #include <vector>
+#include <map>
 
 #include "maze.hpp"
 
@@ -21,7 +22,38 @@ void separator(){
 }
 
 int main( int argc, char **argv ){
+
+	std::string filepath;
+	/* read parameters from argc & argv */
+	{
+		if( argc > 1 ){
+			if( argc == 3 ){
+				std::string _flag( argv[1] );
+				std::istringstream file( argv[2] );
+
+				if( _flag != "-f" ){
+					std::cerr << "ERROR: Flag incorrect, please try another.\n";
+					return 1;
+				}
+
+				file >> filepath;
+			} else {
+				std::cerr << "ERROR: Arguments are incorrent (too big or too small)\n";
+				std::cerr << "Please, try running again following the example:";
+				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
+				return 1;
+			}
+		}
+		else
+		{
+			std::cerr << "ERROR: Invalid number of arguments!\n";
+			std::cerr << "Please, check the documentation!\n";
+			return 1;
+		}
+	}
+
 	double FPS = 1000*1/3;
+
 	system("clear");
 	std::cout << "Please, welcome to the Amaze Game!\n";
 	std::cout << "Do you want to see the instructions(1)\n";
@@ -39,40 +71,28 @@ int main( int argc, char **argv ){
 		separator();
 		std::cout << "\n\nGood Luck!\n";
 		std::cout << "\n\nType any key to continue...\n";
-		std::cin;
+
+		/* key press event */
+		char _mbuf;
+		for( int i = 0; i < 2; i++ )
+			std::cin.get(_mbuf);
 	}
 
 	separator();
 	std::cout << "Starting the game...\n";
 
-	std::string filepath;
-	/* read parameters from argc & argv */
-	{
-		if( argc > 1 ){
-			if( argc == 3 ){
-				std::string _flag( argv[1] );
-				std::istringstream file( argv[2] );
-
-				if( _flag != "-f" ){
-					std::cerr << "Flag incorrect, please try another.\n";
-					return 1;
-				}
-
-				file >> filepath;
-			} else {
-				std::cerr << "Arguments are incorrent (too big or too small)\n";
-				std::cerr << "Please, try running again following the example:";
-				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
-				return 1;
-			}
-		}
-	}
 
 	std::ifstream initialConfig;
 	initialConfig.open( filepath.c_str() );
 
-	game::maze canvas( initialConfig );
-	canvas.createSnake(game::pos(1,1));	// initial snake position (x, y)
+	bool snk_created = false;
+	game::maze canvas( initialConfig, snk_created );
+	if( !snk_created ){
+		std::cerr << "ERROR: A snake ("
+			<< char(game::sym::snake_) << ") is missing on the parse file!\n";
+		return 1;
+	}
+	// canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
 	size_t loopCounter = 0;
 
 	{
@@ -91,15 +111,9 @@ int main( int argc, char **argv ){
 			gameRunning = canvas.walk( directions.front() );
 			canvas.printMaze();
 			directions.pop_front();
-		}
-
-/*		while( gameRunning and loopCounter++ < 1000 ){
-			system("clear");
-			gameRunning = canvas.walk(game::dir::right);
-			canvas.printMaze();
 			std::this_thread::sleep_for( std::chrono::milliseconds( int(FPS) ) );
 		}
-*/
+
 	}
 
 	std::cout << "Exiting the game...\n";

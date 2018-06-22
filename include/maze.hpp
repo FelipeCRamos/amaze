@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iomanip>
 #include <list>
+#include <chrono>
+#include <random>
 
 namespace game
 {
@@ -26,9 +28,10 @@ namespace game
 	enum sym
 	{
 		none_ = ' ',
-		apple_ = '*',
+		inv_wall_ = '.',
+		apple_ = '@',
 		wall_ = '#',
-		snake_ = '%'
+		snake_ = '*'
 	};
 
 	/** Enumerates the directions that the snake can take. */
@@ -83,7 +86,7 @@ namespace game
 
 		public:
 			/** Default constructor, recieve a ifstream with map config. */
-			maze( std::ifstream & _ifsfile );
+			maze( std::ifstream & _ifsfile, bool & _snk );
 
 			/** Print the entire maze on the screen. */
 			bool printMaze();
@@ -106,6 +109,10 @@ namespace game
 
 			std::list<dir> find_route( pos, pos );
 
+			bool randomApplePosition();
+
+			pos applePos();
+			pos snakeHead();
 	};
 }
 #endif
