@@ -343,7 +343,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 
 			// If adjacent coordinate is valid, has path and
 			// not visited yet, enqueue it.
-			if( /*true == checkbound( pos(colNum[i], rowNum[i]) ) and */false == visited[row][col] ){
+			if( true == checkbound( pos(colNum[i], rowNum[i]) ) and false == visited[row][col] ){
 				// Mark coordinate as visited and enqueue it.
 				dir aux; // Where it went.
 				if( i == 0) aux = dir::up;
