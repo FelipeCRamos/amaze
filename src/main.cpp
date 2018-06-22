@@ -84,13 +84,21 @@ int main( int argc, char **argv ){
 	std::ifstream initialConfig;
 	initialConfig.open( filepath.c_str() );
 
-	game::maze canvas( initialConfig );
-	canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
+	bool snk_created = false;
+	game::maze canvas( initialConfig, snk_created );
+	if( !snk_created ){
+		std::cerr << "ERROR: A snake ("
+			<< char(game::sym::snake_) << ") is missing on the parse file!\n";
+		return 1;
+	}
+	// canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
 	size_t loopCounter = 0;
 
 	{
 		// Initial declarations of the game
 		bool gameRunning = true;
+		bool appleCreated = canvas.randomApplePosition();
+		assert( appleCreated == true );
 		// std::map<bool, pos>
 		std::list<game::pos> pathToApple;
 
