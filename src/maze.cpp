@@ -189,7 +189,7 @@ bool game::maze::createSnake( pos _position ){
 }
 /*}}}*/
 
-bool game::maze::walk( dir _dir ){
+bool game::maze::walk( dir _dir, bool _s ){
 /*{{{*/
 	pos headNode(m_snake.front());
 	bool grow = false;
@@ -201,8 +201,8 @@ bool game::maze::walk( dir _dir ){
 		if( checkbound(_curr) )
 		{
 			isApple(_curr, grow);
-			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
-			if(!grow) m_snake.pop_back();
+			if( !_s ) m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow and _s) m_snake.pop_back();
 		} else return false;
 	} 
 	
@@ -213,8 +213,8 @@ bool game::maze::walk( dir _dir ){
 		if( checkbound(_curr) )
 		{
 			isApple(_curr, grow);
-			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
-			if(!grow) m_snake.pop_back();
+			if( !_s ) m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow and _s) m_snake.pop_back();
 		} else return false;
 	}
 	
@@ -225,8 +225,8 @@ bool game::maze::walk( dir _dir ){
 		if( checkbound(_curr) )
 		{
 			isApple(_curr, grow);
-			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
-			if(!grow) m_snake.pop_back();
+			if( !_s ) m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow and _s) m_snake.pop_back();
 		} else return false;
 	} 
 	
@@ -237,8 +237,8 @@ bool game::maze::walk( dir _dir ){
 		if( checkbound(_curr) )
 		{
 			isApple(_curr, grow);
-			m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
-			if(!grow) m_snake.pop_back();
+			if( !_s ) m_snake.push_front( pos(headNode.width+_xof, headNode.height+_yof));
+			if(!grow and _s) m_snake.pop_back();
 		} else return false;
 	}
 	return true;

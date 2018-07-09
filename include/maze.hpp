@@ -98,7 +98,7 @@ namespace game
 			bool createSnake( pos );
 
 			/** Makes the snake walk to the specified direction. */
-			bool walk( dir );
+			bool walk( dir, bool );
 
 			/** Check bounds. */
 			bool checkbound( pos _position );

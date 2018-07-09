@@ -96,8 +96,8 @@ int main( int argc, char **argv ){
 	// canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
 	size_t loopCounter = 0;
 	size_t AppleCounter = 0;
-	while( AppleCounter < 10 )
-	{
+	// while( AppleCounter < 10 )
+	// {
 		// Initial declarations of the game
 		bool gameRunning = true;
 
@@ -105,29 +105,57 @@ int main( int argc, char **argv ){
 
 		// Discovers the right sequence of moves to perfom,
 		// in order to find the apple.
-		std::list<game::dir> directions;
-		directions = canvas.find_route( canvas.snakeHead(),
-										canvas.applePos() );
+		// std::list<game::dir> directions;
+		// directions = canvas.find_route( canvas.snakeHead(),
+										// canvas.applePos() );
 
-		std::cout << "Directions={ ";
-		for( auto i( directions.begin() ); i != directions.end(); i++ ){
-			std::cout << *i << "; ";
-		}
-		std::cout << "}\n";
+		// std::cout << "Directions={ ";
+		// for( auto i( directions.begin() ); i != directions.end(); i++ ){
+			// std::cout << *i << "; ";
+		// }
+		// std::cout << "}\n";
 
 		// While there still is directions to go and game is Runnig,
 		// walk on that direction and remove it from list.
-		while( !directions.empty() and gameRunning ){
+		while( /*!directions.empty() and*/ gameRunning ){
 			system("clear");
-			gameRunning = canvas.walk( directions.front() );
+			// gameRunning = canvas.walk( directions.front() );
+
+
+			size_t dir = random() % 4;
+			std::cout << "print random: " << dir << std::endl;
+			game::dir real_dir;
+			do{
+				std::mt19937 random (
+					std::chrono::system_clock::now().time_since_epoch().count()
+				);
+				size_t dir = random() % 4;
+				switch(dir)
+				{
+					case 0:
+						real_dir = game::dir::up;
+						break;
+					case 1:
+						real_dir = game::dir::down;
+						break;
+					case 2:
+						real_dir = game::dir::left;
+						break;
+					case 3:
+						real_dir = game::dir::right;
+						break;
+				};
+				// std::cout << "dentro do while\n";
+			} while ( !canvas.walk( real_dir, false ) );
+			gameRunning = canvas.walk( real_dir, true );
 			canvas.printMaze();
 
 			// Removes direction that was already used.
-			directions.pop_front();
+			// directions.pop_front();
 			std::this_thread::sleep_for( std::chrono::milliseconds( int(FPS) ) );
 		}
-		AppleCounter++;
-	}
+		// AppleCounter++;
+	// }
 
 	std::cout << "Exiting the game...\n";
 	return 0;
