@@ -45,7 +45,7 @@ namespace game
 	};
 
 	/* Struct for BFS purposes. */
-	struct queueNode
+	struct qNode
 	{
 		pos _cord;
 		std::list<game::dir> where_to_move;
@@ -63,26 +63,6 @@ namespace game
 			char ** m_canvas;	
 
 			pos m_apple;					//!< Apple position (NOT IMPLEMENTED)
-
-			/** Class that tells the direction the snake must go in order to
-			 * eat the apple. (NOT IMPLEMENTED YET) */
-			class ai
-			{
-				protected:
-					pos f_apple;	//!< Apple that the algorithm will search
-
-				public:
-					/* The successful path to the apple object. */
-					std::list<pos> f_pos;
-
-					/* Future recurssive function to find the path. */
-					//std::list<dir> find_route( pos, pos );
-
-					// For when path to apple is inexistent.
-					// Default movement will just send snake to die.
-					//std::list<dir> DEFAULT_MOVEMENTS( 100, up );
-	
-			};
 
 		public:
 			/** Default constructor, recieve a ifstream with map config. */

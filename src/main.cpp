@@ -38,28 +38,31 @@ int main( int argc, char **argv ){
 
 				file >> filepath;
 			} else {
-				std::cerr << "ERROR: Arguments are incorrent (too big or too small)\n";
-				std::cerr << "Please, try running again following the example:";
-				std::cerr << "\n./amaze -f input_folder/input_file.dat\n";
+                std::cerr << "ERROR: "
+                     << "Arguments are incorrent (too big or too small)\n"
+                     << "Please, try running again following the example:\n"
+                     << "\t./amaze -f input_folder/input_file.dat\n";
 				return 1;
 			}
 		}
 		else
 		{
-			std::cerr << "ERROR: Invalid number of arguments!\n";
-			std::cerr << "Please, check the documentation!\n";
+            std::cerr << "ERROR: "
+                << "Invalid number of arguments!\n"
+                << "Please, check the documentation!\n";
 			return 1;
 		}
 	}
 
-	double FPS = 1000*1/3;
+	const double FPS = 1000*1/3;
 
 	system("clear");
-	std::cout << "Please, welcome to the Amaze Game!\n";
+	std::cout << "Welcome to the Amaze Game!\n";
 	std::cout << "Do you want to see the instructions(1)\n";
 	std::cout << "or launch the game(2)? " << std::endl;
 	std::cout << "Choice: ";
-	int first_choice;
+
+	size_t first_choice;
 	std::cin >> first_choice;
 
 	if( first_choice == 1 ){
@@ -88,11 +91,15 @@ int main( int argc, char **argv ){
 	bool snk_created = false;
 	game::maze canvas( initialConfig, snk_created );
 
+    /* condition to check if the snakes exist */
 	if( !snk_created ){
-		std::cerr << "ERROR: A snake ("
-			<< char(game::sym::snake_) << ") is missing on the parse file!\n";
+        std::cerr << "ERROR: "
+            << "A snake ("
+			<< char(game::sym::snake_)
+            << ") is missing on the parse file!\n";
 		return 1;
 	}
+
 	// canvas.createSnake(game::pos(1,1));		// initial snake position (x, y)
 	size_t loopCounter = 0;
 	size_t AppleCounter = 0;
@@ -115,7 +122,7 @@ int main( int argc, char **argv ){
 		// }
 		// std::cout << "}\n";
 
-		// While there still is directions to go and game is Runnig,
+		// While there still is directions to go and game is Running,
 		// walk on that direction and remove it from list.
 		while( /*!directions.empty() and*/ gameRunning ){
 			system("clear");

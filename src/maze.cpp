@@ -291,31 +291,32 @@ bool game::maze::isApple( pos _p, bool & _check ){
 
 std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){ 
 /*{{{*/
-	int rowNum[] = {-1, 0, 0, 1};
-	int colNum[] = {0, -1, 1, 0};
+	short int rowNum[] = {-1, 0, 0, 1};
+	short int colNum[] = {0, -1, 1, 0};
 
 	std::list<dir> moving;
 
+    /* Boolean 2-D array with visited positions */
 	bool visited[m_height][m_width];
-	std::memset(visited, false, sizeof visited);
+	std::memset(visited, false, sizeof visited);    // set's all to false
 
-	// Mark coordinate as visited.
+	/* Mark current coordinate(y,x) as visited */
 	visited[_start.height][_start.width] = true;
 
-	// Create a queue for BFS.
-	std::queue<queueNode> q;
+	/* Create a queue for BFS */
+	std::queue<qNode> q;
 
-	// Direction to reach _curr from _curr;
+	/* Direction to reach _curr from _curr */
 	moving.push_back( dir::stay );
-	queueNode inicio = { _start, moving };
+	qNode inicio = { _start, moving };
 	q.push( inicio );
 
-	// Do BFS starting from current cell.
+	/* Do BFS starting from current cell */
 	while( !q.empty() ){
-		queueNode curr = q.front();
+		qNode curr = q.front();
 		pos point = curr._cord;
 
-		// If we have reached the destination cell, we are done.
+		/* If we have reached the destination cell, we are done */
 		if( point.height == _apple.height and point.width == _apple.width ){
 			return curr.where_to_move;
 		}
@@ -344,7 +345,7 @@ std::list<game::dir> game::maze::find_route( pos _start, pos _apple ){
 
 				visited[row][col] = true;
 				curr.where_to_move.push_back( aux );
-				queueNode adj = { pos(col, row),		// denada
+				qNode adj = { pos(col, row),		// denada
 								  curr.where_to_move };
 				
 				curr.where_to_move.pop_back();
